@@ -13,8 +13,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def main():
 
-    #os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
     # Init Node
     rospy.init_node('ml_training', anonymous=False)
 

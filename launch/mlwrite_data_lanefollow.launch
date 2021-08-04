@@ -2,7 +2,7 @@
 
   <arg name="image_raw_topic" default="/usb_cam/image_raw"/>
   <arg name="twist_cmd_topic" default="/cmd_vel"/>
-  <arg name="base_folder" default="/set1"/>
+  <arg name="folder" default="set1"/>
 
   <node name="rosserial" pkg="rosserial_python" type="serial_node.py" args="tcp" output="screen" />
 
@@ -18,7 +18,7 @@
     <node name="write_data" pkg="ackerbot" type="mlwrite_data_lanefollow.py" output="screen">
       <param name="image_raw_topic" value="$(arg image_raw_topic)"/>
       <param name="twist_cmd_topic" value="$(arg twist_cmd_topic)"/>
-      <param name="base_folder" value="$(arg base_folder)"/>
+      <param name="base_folder" value="$(arg folder)"/>
     </node>
 
 </launch>
