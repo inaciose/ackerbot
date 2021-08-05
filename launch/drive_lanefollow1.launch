@@ -1,0 +1,36 @@
+<launch>
+
+  <!-- camera settings -->
+  <arg name="video_device" default="/dev/video0" />
+  <!--
+  <arg name="image_width" default="320" />
+  <arg name="image_height" default="240" />
+  -->
+
+  <!-- write data settings -->
+  <arg name="image_raw_topic" default="/usb_cam/image_raw"/>
+  <arg name="twist_cmd_topic" default="/cmd_vel"/>
+  <arg name="twist_linear_x" default="0.25"/>
+  <arg name="model" default="model1.h5"/>
+
+
+  <group if="$(eval arg('model') != '')">
+    <include file="$(find ackerbot)/launch/modules/camera.launch" >
+      <arg name="video_device" value="$(arg video_device)" />
+      <!--
+      <arg name="image_width" value="$(arg image_width)" />
+      <arg name="image_height" value="$(arg image_height)" />
+      -->
+    </include>
+
+    <node name="rosserial" pkg="rosserial_python" type="serial_node.py" args="tcp" output="screen" />
+
+    <node name="ml_driving" pkg="ackerbot" type="drive_lanefollow1.py" output="screen">
+      <param name="image_raw_topic" value="$(arg image_raw_topic)"/>
+      <param name="twist_cmd_topic" value="$(arg twist_cmd_topic)"/>
+      <param name="twist_linear_x" value="$(arg twist_linear_x)"/>
+      <param name="modelname" value="$(arg model)"/>
+    </node>
+  </group>
+  
+</launch>

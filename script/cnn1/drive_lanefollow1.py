@@ -74,7 +74,7 @@ def main():
 
     # load model
     s = str(pathlib.Path(__file__).parent.absolute())
-    path = s + '/../model/' + modelname
+    path = s + '/../../model/' + modelname
     print (path)
     model = load_model(path)
 

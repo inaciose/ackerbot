@@ -35,20 +35,17 @@ global data_path
 
 # Callback Function to receive the nodeCmd values
 def message_nodeCmd_ReceivedCallback(message):
-
     global nodeCmd
     nodeCmd = message.data
 
 # Callback Function to receive the cmd_vel values
 def message_Twist_ReceivedCallback(message):
-
     global angular
     global linear
     global begin_cmd
 
     angular = float(message.angular.z)
     linear = float(message.linear.x)
-
     begin_cmd = True
 
 # Callback function to receive image
@@ -59,17 +56,16 @@ def message_RGB_ReceivedCallback(message):
     global begin_img
 
     img_rbg = bridge.imgmsg_to_cv2(message, "bgr8")
-
     begin_img = True
 
     
 def signal_handler(sig, frame):
     global driving_log
-
     global data_path
 
     print('You pressed Ctrl+C!')
     driving_log.to_csv(data_path + '/driving_log.csv',mode='a',index=False,header=False)
+    rospy.loginfo('driving_log.csv saved. exit now!')
     sys.exit(0)    
 
 def main():
@@ -97,19 +93,30 @@ def main():
 
     image_raw_topic = rospy.get_param('~image_raw_topic', '/ackermann_vehicle/camera/rgb/image_raw') 
     twist_cmd_topic = rospy.get_param('~twist_cmd_topic', '/cmd_vel')
-    base_folder = rospy.get_param('~base_folder', 'set1') 
+    base_folder = rospy.get_param('~base_folder', '~/ws/ackerbot/data')
+    folder = rospy.get_param('~folder', 'set1') 
+    rate_hz = rospy.get_param('~rate', 30)
+    image_width = rospy.get_param('~width', 320)
+    image_height = rospy.get_param('~height', 160)
 
-    s = str(pathlib.Path(__file__).parent.absolute())
-    data_path = s + '/../data/' + base_folder
+    # If base_folder does not exist, exit
+    if not os.path.exists(base_folder):
+        rospy.logerr(base_folder)
+        rospy.logerr('Base folder does not exists, please create it or try again with a different folder!')
+        os._exit(os.EX_OK)
+
+    # build and display data_path
+    data_path = base_folder + '/' + folder
+    rospy.loginfo(data_path)
 
     # If the path does not exist, create it
     if not os.path.exists(data_path):
         os.makedirs(data_path)
         data_path2 = data_path + '/IMG'
         os.makedirs(data_path2)
-
-    print (data_path)
-    print (data_path + '/driving_log.csv')
+    else:
+        rospy.logerr('Folder already exists, please try again with a different folder!')
+        os._exit(os.EX_OK)
 
     # Subscribe topics
     rospy.Subscriber("nodeend", Bool, message_nodeCmd_ReceivedCallback)
@@ -120,12 +127,16 @@ def main():
     bridge = CvBridge()
 
     # Create pandas dataframe
-    # driving_log = pd.DataFrame(columns=['Center','Steering'])
     driving_log = pd.DataFrame(columns=['Center','Steering', 'Velocity'])
 
-    # prepare loop
-    rate = rospy.Rate(10)
+    # set loop rate 
+    rate = rospy.Rate(rate_hz)
+
+    # set handler on termination
     signal.signal(signal.SIGINT, signal_handler)
+
+    # only to display saved image counter
+    counter = 0
 
     while  True:
 
@@ -140,31 +151,25 @@ def main():
 
         curr_time = datetime.datetime.now()
         image_name = str(curr_time.year) + '_' + str(curr_time.month) + '_' + str(curr_time.day)+ '__' + str(curr_time.hour)+ '_' + str(curr_time.minute)+ '_' + str(curr_time.second)+ '__' + str(curr_time.microsecond) + str('.jpg')        
-        # add image and angle to the driving_log pandas
-        #row  = pd.DataFrame([[image_name,angular]],columns=['Center','Steering'])
+        # add image, velocity and angle to the driving_log pandas
         row  = pd.DataFrame([[image_name,angular, linear]],columns=['Center','Steering', 'Velocity'])
         driving_log=driving_log.append(row,ignore_index=True)
         
         # save image
-        width = 320
-        height = 160
-        dim = (width, height)
+        dim = (image_width, image_height)
         img_rbg = cv2.resize(img_rbg, dim, interpolation = cv2.INTER_AREA)
         image_saved = Image_pil.fromarray(img_rbg)
-        #image_saved.save('../data/IMG/' + image_name)
-        image_saved.save( data_path + '/IMG/' + image_name)
-        print('Image Saved')
+        image_saved.save(data_path + '/IMG/' + image_name)
         
+        counter += 1
+        rospy.loginfo('Image Saved: %s', counter)        
         rate.sleep()
 
 
     print('You pressed end')
     driving_log.to_csv(data_path + '/driving_log.csv',mode='a',index=False,header=False)
+    rospy.loginfo('driving_log.csv saved. exit now!')
     sys.exit(0)    
-
-    print ("###################################")
-    print ("######## ml_write_data end ########")
-    print ("###################################")
 
 
 if __name__ == '__main__':

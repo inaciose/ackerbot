@@ -16,7 +16,8 @@ def main():
     # Init Node
     rospy.init_node('ml_training', anonymous=False)
 
-    base_folder = rospy.get_param('~base_folder', 'set1') 
+    base_folder = rospy.get_param('~base_folder', '~/ws/ackerbot/data')
+    folder = rospy.get_param('~folder', 'set1') 
     modelname = rospy.get_param('~modelname', 'model1.h5')
     epochs = rospy.get_param('~epochs', 10)
     steps_per_epoch = rospy.get_param('~steps_per_epoch', 100)
@@ -27,6 +28,7 @@ def main():
     validation_steps = rospy.get_param('~validation_steps', 50)
 
     print('base_folder: ', base_folder)
+    print('folder: ', folder)
     print('modelname: ', modelname)
     print('epochs: ', epochs)
     print('steps_per_epoch: ', steps_per_epoch)
@@ -39,8 +41,23 @@ def main():
     # Todo - Adicionar conditionals para treinar o modelo se ele já existe
 
     # STEP 1 - Initialize Data
-    s = str(pathlib.Path(__file__).parent.absolute())
-    data_path = s + '/../data/' + base_folder
+    # If base_folder does not exist, exit
+    if not os.path.exists(base_folder):
+        rospy.logerr(base_folder)
+        rospy.logerr('Base folder does not exists, please create it or try again with a different folder!')
+        os._exit(os.EX_OK)
+
+
+    # build and display data_path
+    data_path = base_folder + '/' + folder
+    rospy.loginfo(data_path)
+
+    # If data_path does not exist, exit
+    if not os.path.exists(data_path):
+        rospy.logerr(folder)
+        rospy.logerr('Data folder does not exists. Try again with a different folder!')
+        os._exit(os.EX_OK)
+
     data = importDataInfo(data_path + '/')
 
     print('\ndata load from ' + base_folder)
@@ -69,7 +86,7 @@ def main():
     # Step 8 - Creating the Model
 
     s = str(pathlib.Path(__file__).parent.absolute())
-    path = s + '/../model/' + modelname
+    path = s + '/../../model/' + modelname
 
     print("\n" + "Create a new model from scratch? [Y/N]")
     if input().lower() == "y":
