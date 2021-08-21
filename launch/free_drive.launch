@@ -9,14 +9,12 @@
 
   <!-- cmd_vel settings -->
   <arg name="angular_factor" default="3"/>
-  <arg name="linear_default" default="0.25"/>
+  <arg name="linear_default" default="0.15"/>
   <arg name="linear_threshold" default="0.05"/>
 
-  <!-- write data settings -->
+  <!-- settings -->
   <arg name="image_raw_topic" default="/usb_cam/image_raw"/>
   <arg name="twist_cmd_topic" default="/cmd_vel"/>
-  <arg name="base_folder" default="~/ws/ackerbot/data"/>
-  <arg name="folder" default="set1"/>
 
   <!--
   <include file="$(find ackerbot)/launch/modules/camera.launch" >
