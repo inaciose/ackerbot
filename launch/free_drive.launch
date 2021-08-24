@@ -1,14 +1,14 @@
 <launch>
 
   <!-- camera settings -->
-  <!--
+  
   <arg name="video_device" default="/dev/video0" />
   <arg name="image_width" default="320" />
   <arg name="image_height" default="240" />
-  -->
+  
 
   <!-- cmd_vel settings -->
-  <arg name="angular_factor" default="3"/>
+  <arg name="angular_factor" default="2"/>
   <arg name="linear_default" default="0.15"/>
   <arg name="linear_threshold" default="0.05"/>
 
@@ -16,13 +16,13 @@
   <arg name="image_raw_topic" default="/usb_cam/image_raw"/>
   <arg name="twist_cmd_topic" default="/cmd_vel"/>
 
-  <!--
+  
   <include file="$(find ackerbot)/launch/modules/camera.launch" >
     <arg name="video_device" value="$(arg video_device)" />
     <arg name="image_width" value="$(arg image_width)" />
     <arg name="image_height" value="$(arg image_height)" />
   </include>
-  -->
+  
 
   <include file="$(find ackerbot)/launch/modules/cmd_vel.launch" >
     <arg name="twist_out" value="$(arg twist_cmd_topic)" /> <!-- shared -->
@@ -30,6 +30,8 @@
     <arg name="linear_default" value="$(arg linear_default)" />
     <arg name="linear_threshold" value="$(arg linear_threshold)" />
   </include>
+
+  <include file="$(find ackerbot)/launch/modules/twist_dirvel.launch" />
 
   <node name="rosserial" pkg="rosserial_python" type="serial_node.py" args="tcp" output="screen" />
   

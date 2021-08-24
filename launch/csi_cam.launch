@@ -1,0 +1,8 @@
+<launch>
+    <node name="camera_node" pkg="ackerbot" type="csicam_publisher" output="screen">
+        <param name="device" type="string" value="0" />
+        <param name="devxr" type="string" value="640" />
+        <param name="devyr" type="string" value="480" />
+        <param name="view" type="int" value="0" />
+    </node> 
+</launch>

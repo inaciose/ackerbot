@@ -1,8 +1,8 @@
 <launch>
 
   <arg name="video_device" default="/dev/video0" />
-  <arg name="image_width" default="640" />
-  <arg name="image_height" default="480" />
+  <arg name="image_width" default="320" />
+  <arg name="image_height" default="240" />
   <arg name="pixel_format" default="yuyv" />
   <arg name="camera_frame_id" default="usb_cam" />
   <arg name="io_method" default="mmap" />

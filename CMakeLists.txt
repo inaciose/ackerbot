@@ -8,6 +8,8 @@ project(ackerbot)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
+  image_transport
   roscpp
   rospy
   std_msgs
@@ -118,6 +120,7 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -149,6 +152,14 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+#add_executable(usbcam_publisher src/usbcam_publisher.cpp)
+add_executable(csicam_publisher src/csicam_publisher.cpp)
+#add_executable(cam_viewer src/cam_viewer.cpp)
+
+#target_link_libraries(usbcam_publisher ${catkin_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(csicam_publisher ${catkin_LIBRARIES} ${OpenCV_LIBS})
+#target_link_libraries(cam_viewer ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 #############
 ## Install ##

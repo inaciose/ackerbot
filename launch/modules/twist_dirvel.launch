@@ -1,0 +1,15 @@
+<launch>
+
+  <arg name="twist_in" default="/cmd_vel"/>
+  <arg name="pub_dir" default="/pub_dir"/>
+  <arg name="pub_vel" default="pub_vel"/>
+  <arg name="wheelbase" default= "0.21"/>
+
+  <node name="twist_dirvel" pkg="ackerbot" type="twist_dirvel.py" output="screen">
+    <param name="twist_in" value="$(arg twist_in)"/>
+    <param name="pub_dir" value="$(arg pub_dir)"/>
+    <param name="pub_vel" value="$(arg pub_vel)"/>
+    <param name="wheelbase" value="$(arg wheelbase)"/>
+  </node>
+
+</launch>

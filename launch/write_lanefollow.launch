@@ -8,9 +8,9 @@
   -->
 
   <!-- cmd_vel settings -->
-  <arg name="angular_factor" default="3"/>
-  <arg name="linear_default" default="0.25"/>
-  <arg name="linear_threshold" default="0.05"/>
+  <arg name="angular_factor" default="2"/>
+  <arg name="linear_default" default="0.15"/>
+  <arg name="linear_threshold" default="0.01"/>
 
   <!-- write data settings -->
   <arg name="image_raw_topic" default="/usb_cam/image_raw"/>
@@ -32,6 +32,8 @@
     <arg name="linear_default" value="$(arg linear_default)" />
     <arg name="linear_threshold" value="$(arg linear_threshold)" />
   </include>
+
+  <include file="$(find ackerbot)/launch/modules/twist_dirvel.launch" />
 
   <node name="rosserial" pkg="rosserial_python" type="serial_node.py" args="tcp" output="screen" />
 

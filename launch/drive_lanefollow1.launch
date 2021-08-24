@@ -10,7 +10,7 @@
   <!-- write data settings -->
   <arg name="image_raw_topic" default="/usb_cam/image_raw"/>
   <arg name="twist_cmd_topic" default="/cmd_vel"/>
-  <arg name="twist_linear_x" default="0.25"/>
+  <arg name="twist_linear_x" default="0.15"/>
   <arg name="model" default="model1.h5"/>
 
 
@@ -24,6 +24,8 @@
     </include>
 
     <node name="rosserial" pkg="rosserial_python" type="serial_node.py" args="tcp" output="screen" />
+
+    <include file="$(find ackerbot)/launch/modules/twist_dirvel.launch" />
 
     <node name="ml_driving" pkg="ackerbot" type="drive_lanefollow1.py" output="screen">
       <param name="image_raw_topic" value="$(arg image_raw_topic)"/>
