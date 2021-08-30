@@ -1,12 +1,10 @@
 <launch>
 
   <!-- camera settings -->
-  
-  <arg name="video_device" default="/dev/video0" />
+  <arg name="video_device" default="/dev/video1" />
   <arg name="image_width" default="320" />
   <arg name="image_height" default="240" />
   
-
   <!-- cmd_vel settings -->
   <arg name="angular_factor" default="2"/>
   <arg name="linear_default" default="0.15"/>

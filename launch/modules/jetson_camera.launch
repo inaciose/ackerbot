@@ -1,0 +1,20 @@
+<launch>
+
+    <arg name="nodename" default="csi_cam"/>
+    <arg name="cap_width" default="1280"/>
+    <arg name="cap_height" default="720"/>
+    <arg name="width" default="320"/>
+    <arg name="height" default="240"/>
+    <arg name="fps" default="60"/>
+
+    <node pkg="jetson_camera" type="jetson_camera_node" name="$(arg nodename)" clear_params="true" output="screen">
+        <param name="cap_width" value="$(arg cap_width)"/>
+        <param name="cap_height" value="$(arg cap_height)"/>
+        <param name="width" value="$(arg width)"/>
+        <param name="height" value="$(arg height)"/>
+        <param name="fps" value="$(arg fps)"/>
+
+        <param name="frame_id" value="main_camera_optical"/>
+        <param name="camera_info_url" value="file://$(find ackerbot)/camera_info/csi_cam_160_cal.yaml"/>
+    </node>
+</launch>
